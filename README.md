@@ -6,8 +6,6 @@ To read the full directions, please go to the [practicum instructions](https://a
 
 **Put your HubSpot developer test account custom objects URL link here:** https://app.hubspot.com/contacts/46523587/objects/2-31808018/views/all/list
 
-
-___
 ## Tips:
 - Commit to your repository often. Even if you make small tweaks to your code, it’s best to be committing to your repository frequently.
 - The subject of the custom object is up to you. Feel free to get creative!

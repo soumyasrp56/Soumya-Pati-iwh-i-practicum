@@ -1,26 +1,109 @@
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const app = express();
+
+
 
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const https = require('https');
+const { title } = require('process');
+
+
 // * Please DO NOT INCLUDE the private app access token in your repo. Don't do this practicum in your normal account.
-const PRIVATE_APP_ACCESS = '';
+const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_ACCESS;
 
 // TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
 // * Code for Route 1 goes here
 
+app.get("/",async (req,res)=>{
+    // res.json("hhhhhh")
+    const contacts = 'https://api.hubapi.com/crm/v3/objects/movies';
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json',
+    }
+
+     params = {
+        'properties': 'movie_name,movie_genre,movie_rating'  
+    }
+
+    try {
+        // Create an instance of Axios with custom httpsAgent
+        const instance = axios.create({
+            httpsAgent: new https.Agent({ rejectUnauthorized: false })
+        });
+        const resp = await instance.get(contacts,{headers:headers, params:params});
+        const data = resp.data.results;
+        // res.send(data);
+        res.render('contacts', { title: 'Movies | HubSpot APIs', data });      
+    } catch (error) {
+        console.error(error);
+    }
+
+
+});
+
 // TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
 
 // * Code for Route 2 goes here
 
+app.get('/update',async(req,res)=>{
+    res.render("update",{title:" Update Custom Object Form | Integrating With HubSpot I Practicum."});
+
+});
+
 // TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
 
 // * Code for Route 3 goes here
+
+
+app.post('/update', async (req, res) => {
+
+    const { name, genre, rating } = req.body;
+    const data = {
+        properties: {
+            "movie_name":name,
+            "movie_genre":genre,
+            "movie_rating":rating,
+        },
+    };
+
+  
+    const updateMovies = 'https://api.hubapi.com/crm/v3/objects/movies';
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        'Content-Type': 'application/json'
+    };
+
+    try { 
+          // Create an instance of Axios with custom httpsAgent
+          const instance = axios.create({
+            httpsAgent: new https.Agent({ rejectUnauthorized: false })
+        });
+        await instance.post(updateMovies, data, { headers } );
+        
+        res.redirect('/');
+    } catch(err) {
+        console.error(err);
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
 
 /** 
 * * This is sample code to give you a reference for how you should structure your calls. 

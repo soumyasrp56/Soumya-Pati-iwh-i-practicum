@@ -53,7 +53,7 @@ app.get("/",async (req,res)=>{
 
 // * Code for Route 2 goes here
 
-app.get('/update',async(req,res)=>{
+app.get('/update-cobj',async(req,res)=>{
     res.render("update",{title:" Update Custom Object Form | Integrating With HubSpot I Practicum."});
 
 });
@@ -63,7 +63,7 @@ app.get('/update',async(req,res)=>{
 // * Code for Route 3 goes here
 
 
-app.post('/update', async (req, res) => {
+app.post('/update-cobj', async (req, res) => {
 
     const { name, genre, rating } = req.body;
     const data = {
